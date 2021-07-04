@@ -19,8 +19,8 @@ AWS API Gateway is a fully managed service that makes it easy for developers to 
   
 AWS Cognito User Pool is a user directory in AWS Cognito, a fully managed identity service offered by AWS. With a user pool, you can allow people to signup with their email address and a password. Cognito confirms the registration by sending the user a code to the email address. AWS Cognito user pool also provides rich APIs for user management, which dramatically resduces development effort to buid a scalable identify service.  
   
-### Installing Zappa and Flask
-Before you can deploy the Flask based REST APIs web app on AWS Lambda with Zappa, you first need to install Zappa and the web framework Flask to build our web app with.  
+### Installing Python Packages including Zappa and Flask
+Before you can deploy the Flask based REST APIs web app on AWS Lambda with Zappa, you first need to install Zappa and the web framework Flask to build our web app with.  There are also other open source libraries adopted in the project. All Python package dependencies can be installed in one short by following below steps.
   
 Clone this git repository into a project directory and "cd" into it. Create a Python virtual environment, activate it, and install Zappa and Flask.  
   
@@ -29,8 +29,7 @@ git clone https://github.com/waldlecai/astri-crypto.git
 cd astri-crypto
 python -m venv venv
 source venv/bin/activate
-pip install flask
-pip install zappa
+pip install -r requirements.txt
 ```
   
 ### Configuring AWS Credentials  
