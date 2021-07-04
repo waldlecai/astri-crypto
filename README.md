@@ -19,7 +19,7 @@ AWS API Gateway is a fully managed service that makes it easy for developers to 
   
 AWS Cognito User Pool is a user directory in AWS Cognito, a fully managed identity service offered by AWS. With a user pool, you can allow people to signup with their email address and a password. Cognito confirms the registration by sending the user a code to the email address. AWS Cognito user pool also provides rich APIs for user management, which dramatically resduces development effort to buid a scalable identify service.  
   
-### Install Zappa and Flask
+### Installing Zappa and Flask
 Before you can deploy the Flask based REST APIs web app on AWS Lambda with Zappa, you first need to install Zappa and the web framework Flask to build our web app with.  
   
 Clone this git repository into a project directory and "cd" into it. Create a Python virtual environment, activate it, and install Zappa and Flask.  
@@ -33,7 +33,7 @@ pip install flask
 pip install zappa
 ```
   
-### Configure AWS Credentials  
+### Configuring AWS Credentials  
 Before you can use Zappa to automate deployment this Identity Service REST APIs onto AWS, you need to properly create AWS Access Keys for satisfying AWS Identity & Access Management requirement.  
 - Create AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY for programmatic access by following [AWS credentials](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) (Programmatic access section)  
 - Obtain existing or create new COGNITO_USER_CLIENT_ID, COGNITO_USER_POOL_ID for accessing AWS Cognito User Pool by following [Configuring AWS Cognito User Pool App Client](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html)  
@@ -55,4 +55,37 @@ load_dotenv(dotenv_path)
 self.client = boto3.client("cognito-idp", region_name=os.getenv("REGION_NAME"))
 self.client_id = os.getenv("COGNITO_USER_CLIENT_ID")
 self.user_pool_id=os.getenv("COGNITO_USER_POOL_ID")
+```
+### Using Zappa  
+#### Initial Deployment
+Before we can deploy Serverless Flask REST APIs, we need to initialize Zappa's configuration by running:
+```
+zappa init
+```
+This command will generate zappa_setting.json specific for project contained within current project folder, similar to following:  
+```
+{
+    "dev": {
+        "app_function": "id_service.app", ## this reflects the main python file and entry point of Flask web app
+        "aws_region": "us-east-1",        ## the AWS region to be deployed to
+        "profile_name": "default",        ## corresponds to the name in square brackets in .aws/credentials
+        "project_name": "astri-crypto",   ## Zappa project name derived from project folder name
+        "runtime": "python3.8",           ## Python runtime
+        "s3_bucket": "zappa-231dlgkmh".   ## Zappa automatically creates a random S3 bucket for uploading and deploying Serverless App package
+    }
+}
+```  
+Initial deployment of Serverless Flask app on AWS Lambda can be done by running following command where either of 'dev'|'staging'|'production' can be used corresponding the environment in question:  
+```
+zappa deploy dev
+```  
+#### Updates Deployment  
+If application code has bene updated, changes can be packaged and deployed onto AWS using following command where either of 'dev'|'staging'|'production' can be used corresponding the environment in question:  
+```
+zappa update dev
+```  
+#### Undeploy  
+The entire Serverless Flask app stack incuding API Gateway, Lambda functions can be undeployed by running following command where either of 'dev'|'staging'|'production' can be used corresponding the environment in question.  
+```
+zappa undeploy dev
 ```
